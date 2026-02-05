@@ -168,11 +168,10 @@ end
 
 function Utils.SanitizeInput(input)
     if type(input) ~= 'string' then return '' end
-    -- Remove potential SQL injection attempts
-    input = input:gsub("'", "''")
-    input = input:gsub('"', '""')
-    -- Remove HTML/script tags
-    input = input:gsub('<[^>]+>', '')
+    -- Remove HTML/script tags and dangerous characters
+    -- Note: This is a secondary defense layer. Primary protection is parameterized queries.
+    input = input:gsub('<[^>]+>', '')  -- Remove HTML tags
+    input = input:gsub('[<>]', '')     -- Remove angle brackets
     return Utils.Trim(input)
 end
 

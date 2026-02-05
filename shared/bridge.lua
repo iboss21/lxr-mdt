@@ -246,7 +246,10 @@ if IsDuplicityVersion() == 1 then -- Server-side only
             return player and player.PlayerData.citizenid or nil
         elseif fw == 'vorp' and Bridge.FrameworkObject then
             local user = Bridge.FrameworkObject.getUser(source)
-            return user and tostring(user.getUsedCharacter.charIdentifier) or nil
+            if user and user.getUsedCharacter and user.getUsedCharacter.charIdentifier then
+                return tostring(user.getUsedCharacter.charIdentifier)
+            end
+            return nil
         elseif fw == 'standalone' then
             -- Fallback to license
             for _, id in ipairs(GetPlayerIdentifiers(source)) do

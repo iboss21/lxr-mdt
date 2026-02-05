@@ -34,17 +34,19 @@ AddEventHandler('playerConnecting', function()
     local playerName = Bridge.GetPlayerName(src)
     
     -- Check if player exists in MDT
-    MySQL.scalar('SELECT id FROM mdt_players WHERE citizenid = ?', {identifier}, function(exists)
+    Citizen.CreateThread(function()
+        local exists = MySQL.scalar.await('SELECT id FROM mdt_players WHERE citizenid = ?', {identifier})
         if not exists then
             -- Create new MDT player record
             local names = Utils.SplitString(playerName, ' ')
-            MySQL.insert('INSERT INTO mdt_players (citizenid, firstname, lastname) VALUES (?, ?, ?)', {
+            local insertId = MySQL.insert.await('INSERT INTO mdt_players (citizenid, firstname, lastname) VALUES (?, ?, ?)', {
                 identifier,
                 names[1] or 'John',
                 names[2] or 'Doe'
-            }, function(insertId)
+            })
+            if insertId then
                 Utils.DebugPrint('Created MDT record for ' .. playerName)
-            end)
+            end
         end
     end)
 end)

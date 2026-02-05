@@ -105,7 +105,8 @@ document.addEventListener('keydown', function(event) {
 
 // Get resource name helper
 function GetParentResourceName() {
-    return window.location.hostname === 'nui-game-internal' 
-        ? 'lxr-mdt' 
-        : 'lxr-mdt';
+    // Always return the resource name
+    // In production (nui-game-internal), this is detected
+    // In development/testing, it's still the same resource
+    return 'lxr-mdt';
 }
